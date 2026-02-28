@@ -104,4 +104,7 @@ crashlytics-build.properties
 # Special Repo Ignored Files and Folders #
 # ====================================== #
 ProjectSettings/*.asset
+ProjectSettings/*.txt
 Packages/
+Scenes/
+Scenes.meta

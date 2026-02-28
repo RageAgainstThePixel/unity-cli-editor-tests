@@ -2,6 +2,10 @@
 
 Smoke tests for [unity-cli](https://github.com/RageAgainstThePixel/unity-cli) and CI: compiler/build behavior and Editmode/Playmode test reporting.
 
+## Build-scene setup
+
+The **compiler** and **build** projects (compiler-warnings, compiler-errors, build-warnings, build-errors) each include a copy of the same editor script at `Assets/Editor/EnsureBuildScene.cs`. On Editor load it ensures an empty scene (`Assets/Scenes/Main.unity`) exists and is in build settings, so Unity versions that require a scene at build time are satisfied without committing a version-specific scene file.
+
 ## Test projects
 
 ### Compiler
