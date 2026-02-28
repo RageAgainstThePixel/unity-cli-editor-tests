@@ -16,9 +16,4 @@ Smoke tests for [unity-cli](https://github.com/RageAgainstThePixel/unity-cli) an
 
 ### Tests (Editmode + Playmode)
 
-Each project contains both Editmode and Playmode tests; run editmode and playmode with separate commands.
-
-- [tests-passing](tests-passing/): Editmode and Playmode tests that pass.
-- [tests-errors](tests-errors/): Editmode and Playmode tests that fail.
-- [tests-skipped](tests-skipped/): Editmode and Playmode tests with `[Ignore]`; runs pass.
-- [tests-suite](tests-suite/): All six tests (pass, fail, skip); both runs fail (one failure each).
+- [tests-suite](tests-suite/): All six tests (pass, fail, skip). Run editmode and playmode with separate commands; full run fails (one failure per mode). Tests are tagged with NUnit categories **Passing**, **Failing**, and **Skipped** so you can run by category (e.g. filter by `Passing` for a green run, or `Failing` for a red run).
