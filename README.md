@@ -14,16 +14,11 @@ Smoke tests for [unity-cli](https://github.com/RageAgainstThePixel/unity-cli) an
 - [build-warnings](build-warnings/): IPreprocessBuildWithReport logs a warning; build succeeds; warning in log.
 - [build-errors](build-errors/): Editor script throws at build time; build fails.
 
-### Editmode
+### Tests (Editmode + Playmode)
 
-- [editmode-passing](editmode-passing/): Single Editmode test `Assert.Pass`; tests pass.
-- [editmode-errors](editmode-errors/): Single Editmode test `Assert.Fail`; tests fail.
-- [editmode-skipped](editmode-skipped/): Editmode test with `[Ignore]`; tests pass (no test run).
-- [editmode-suite](editmode-suite/): Pass/fail/skip Editmode; run fails (one test fails).
+Each project contains both Editmode and Playmode tests; run editmode and playmode with separate commands.
 
-### Playmode
-
-- [playmode-passing](playmode-passing/): Single Playmode `[UnityTest]` passes; tests pass.
-- [playmode-errors](playmode-errors/): Single Playmode `[UnityTest]` fails; tests fail.
-- [playmode-skipped](playmode-skipped/): Playmode with `[Ignore]`; tests pass.
-- [playmode-suite](playmode-suite/): All three Playmode tests; run fails (one test fails).
+- [tests-passing](tests-passing/): Editmode and Playmode tests that pass.
+- [tests-errors](tests-errors/): Editmode and Playmode tests that fail.
+- [tests-skipped](tests-skipped/): Editmode and Playmode tests with `[Ignore]`; runs pass.
+- [tests-suite](tests-suite/): All six tests (pass, fail, skip); both runs fail (one failure each).
