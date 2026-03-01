@@ -1,0 +1,55 @@
+{
+  "os": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "unity-version": [
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "6000.0",
+    "6000.1",
+    "6000.2",
+    "6000.3"
+  ],
+  "project": [
+    "compiler-warnings",
+    "compiler-errors",
+    "build-warnings",
+    "build-errors",
+    "tests-suite"
+  ],
+  "include": [
+    {
+      "os": "ubuntu-latest",
+      "build-target": "StandaloneLinux64"
+    },
+    {
+      "os": "ubuntu-latest",
+      "build-target": "WebGL",
+      "build-args": "-colorSpace Gamma"
+    },
+    {
+      "os": "ubuntu-latest",
+      "build-target": "Android"
+    },
+    {
+      "os": "windows-latest",
+      "build-target": "StandaloneWindows64"
+    },
+    {
+      "os": "windows-latest",
+      "build-target": "Android"
+    },
+    {
+      "os": "macos-latest",
+      "build-target": "StandaloneOSX"
+    },
+    {
+      "os": "macos-latest",
+      "build-target": "iOS"
+    }
+  ]
+}

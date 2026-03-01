@@ -1,0 +1,73 @@
+name: build
+permissions:
+  contents: read
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        required: true
+        type: string
+    secrets:
+      UNITY_USERNAME:
+        required: true
+      UNITY_PASSWORD:
+        required: true
+jobs:
+  build:
+    name: ${{ matrix.name }} ${{ matrix.project }}
+    strategy:
+      matrix: ${{ fromJSON(inputs.matrix) }}
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    env:
+      UNITY_PROJECT_PATH: ${{ github.workspace }}/${{ matrix.project }}
+    steps:
+      - name: Free Disk Space
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: endersonmenezes/free-disk-space@713d134e243b926eba4a5cce0cf608bfd1efb89a # v2.1.1
+        with:
+          remove_android: true
+          remove_dotnet: false
+
+      - uses: actions/checkout@v5
+
+      - uses: RageAgainstThePixel/unity-setup@main
+        with:
+          version-file: None
+          build-targets: ${{ matrix.build-target }}
+          unity-version: ${{ matrix.unity-version }}
+
+      - uses: RageAgainstThePixel/activate-unity-license@main
+        with:
+          license: Personal
+          username: ${{ secrets.UNITY_USERNAME }}
+          password: ${{ secrets.UNITY_PASSWORD }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install OpenUPM CLI and unity-cli
+        run: npm install -g openupm-cli @rage-against-the-pixel/unity-cli
+        shell: bash
+
+      - name: Run project
+        env:
+          PROJECT: ${{ matrix.project }}
+          BUILD_TARGET: ${{ matrix.build-target }}
+          UNITY_VERSION: ${{ matrix.unity-version }}
+          BUILD_ARGS: ${{ matrix.build-args }}
+
+        run: bash .github/workflows/scripts/run-project.sh
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        name: Upload Artifacts
+        if: always()
+        with:
+          name: ${{ github.run_number }}.${{ github.run_attempt }} ${{ matrix.os }} ${{ matrix.unity-version }} ${{ matrix.build-target }} ${{ matrix.project }} Artifacts
+          path: |
+            ${{ github.workspace }}/**/*.log
+            ${{ github.workspace }}/**/Builds/${{ matrix.build-target }}/
