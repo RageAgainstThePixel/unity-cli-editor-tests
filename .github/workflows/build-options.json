@@ -14,13 +14,6 @@
     "6000.2",
     "6000.3"
   ],
-  "project": [
-    "compiler-warnings",
-    "compiler-errors",
-    "build-warnings",
-    "build-errors",
-    "tests-suite"
-  ],
   "include": [
     {
       "os": "ubuntu-latest",

@@ -14,7 +14,7 @@ on:
         required: true
 jobs:
   build:
-    name: ${{ matrix.name }} ${{ matrix.project }}
+    name: ${{ matrix.name }}
     strategy:
       matrix: ${{ fromJSON(inputs.matrix) }}
       fail-fast: false
@@ -22,7 +22,9 @@ jobs:
     permissions:
       contents: read
     env:
-      UNITY_PROJECT_PATH: ${{ github.workspace }}/${{ matrix.project }}
+      BUILD_TARGET: ${{ matrix.build-target }}
+      UNITY_VERSION: ${{ matrix.unity-version }}
+      BUILD_ARGS: ${{ matrix.build-args }}
     steps:
       - name: Free Disk Space
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -53,13 +55,38 @@ jobs:
         run: npm install -g openupm-cli @rage-against-the-pixel/unity-cli
         shell: bash
 
-      - name: Run project
+      - name: Run compiler-warnings
         env:
-          PROJECT: ${{ matrix.project }}
-          BUILD_TARGET: ${{ matrix.build-target }}
-          UNITY_VERSION: ${{ matrix.unity-version }}
-          BUILD_ARGS: ${{ matrix.build-args }}
+          PROJECT: compiler-warnings
+          UNITY_PROJECT_PATH: ${{ github.workspace }}/compiler-warnings
+        run: bash .github/workflows/scripts/run-project.sh
+        shell: bash
 
+      - name: Run compiler-errors
+        env:
+          PROJECT: compiler-errors
+          UNITY_PROJECT_PATH: ${{ github.workspace }}/compiler-errors
+        run: bash .github/workflows/scripts/run-project.sh
+        shell: bash
+
+      - name: Run build-warnings
+        env:
+          PROJECT: build-warnings
+          UNITY_PROJECT_PATH: ${{ github.workspace }}/build-warnings
+        run: bash .github/workflows/scripts/run-project.sh
+        shell: bash
+
+      - name: Run build-errors
+        env:
+          PROJECT: build-errors
+          UNITY_PROJECT_PATH: ${{ github.workspace }}/build-errors
+        run: bash .github/workflows/scripts/run-project.sh
+        shell: bash
+
+      - name: Run tests-suite
+        env:
+          PROJECT: tests-suite
+          UNITY_PROJECT_PATH: ${{ github.workspace }}/tests-suite
         run: bash .github/workflows/scripts/run-project.sh
         shell: bash
 
@@ -67,7 +94,7 @@ jobs:
         name: Upload Artifacts
         if: always()
         with:
-          name: ${{ github.run_number }}.${{ github.run_attempt }} ${{ matrix.os }} ${{ matrix.unity-version }} ${{ matrix.build-target }} ${{ matrix.project }} Artifacts
+          name: ${{ github.run_number }}.${{ github.run_attempt }} ${{ matrix.os }} ${{ matrix.unity-version }} ${{ matrix.build-target }} Artifacts
           path: |
             ${{ github.workspace }}/**/*.log
             ${{ github.workspace }}/**/Builds/${{ matrix.build-target }}/
