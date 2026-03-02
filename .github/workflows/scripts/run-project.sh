@@ -10,6 +10,15 @@ RUN_UNITY() {
   unity-cli run --unity-project "${UNITY_PROJECT_PATH}" --unity-editor "${UNITY_EDITOR_PATH}" -quit -batchmode -nographics -buildTarget "${BUILD_TARGET}" --log-name "${PROJECT}" "$@"
 }
 
+RUN_UNITY || true
+
+(cd "${UNITY_PROJECT_PATH}" && openupm add com.utilities.buildpipeline) || {
+  echo "Failed to add build pipeline package";
+  exit 1;
+}
+
+RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.ValidateProject -importTMProEssentialsAsset || true
+
 case "$PROJECT" in
   compiler-warnings)
     RUN_UNITY
@@ -22,8 +31,6 @@ case "$PROJECT" in
     }
     ;;
   build-warnings|build-errors)
-    (cd "${UNITY_PROJECT_PATH}" && openupm add com.utilities.buildpipeline)
-    RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.ValidateProject -importTMProEssentialsAsset
     ec=0; RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.StartCommandLineBuild -sceneList Assets/Scenes/Main.unity ${BUILD_ARGS:+"${BUILD_ARGS}"} || ec=$?
     if [[ "$PROJECT" == "build-errors" ]]; then
       [[ $ec -eq 0 ]] && {
