@@ -42,7 +42,7 @@ case "$PROJECT" in
   tests-suite)
     for platform in EditMode PlayMode Player; do
       RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-Passing-results.xml" -testCategory Passing
-      RUN_UNITY -runTests -testPlatform "${platform}" -testResults "$UNITY_PROJECT_PATH/${platform}-Failing-results.xml" -testCategory Failing || true
+      RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-Failing-results.xml" -testCategory Failing || true
       RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-Skipped-results.xml" -testCategory Skipped
       RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-All-results.xml" || true
     done
