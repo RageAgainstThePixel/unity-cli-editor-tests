@@ -8,7 +8,7 @@ UNITY_VERSION="${UNITY_VERSION:?}"
 BUILD_ARGS="${BUILD_ARGS:-}"
 
 RUN_UNITY() {
-  unity-cli run -p "$UNITY_PROJECT_PATH" -u "$UNITY_VERSION" -t "$BUILD_TARGET" -quit -batchmode -nographics "$@"
+  unity-cli run --unity-project "$UNITY_PROJECT_PATH" -quit -batchmode -nographics -buildTarget "$BUILD_TARGET" "$@"
 }
 
 case "$PROJECT" in

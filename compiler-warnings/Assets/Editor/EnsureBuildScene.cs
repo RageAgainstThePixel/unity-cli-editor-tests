@@ -18,21 +18,24 @@ namespace UtilSceneSetup
         [InitializeOnLoadMethod]
         private static void OnEditorLoad()
         {
-            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
+            UnityEditor.EditorApplication.delayCall += () =>
             {
+                if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
+                {
+                    EnsureInBuildSettings();
+                    return;
+                }
+
+                if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
+                {
+                    AssetDatabase.CreateFolder("Assets", "Scenes");
+                }
+
+                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                EditorSceneManager.SaveScene(scene, ScenePath);
+                AssetDatabase.Refresh();
                 EnsureInBuildSettings();
-                return;
-            }
-
-            if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
-            {
-                AssetDatabase.CreateFolder("Assets", "Scenes");
-            }
-
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            EditorSceneManager.SaveScene(scene, ScenePath);
-            AssetDatabase.Refresh();
-            EnsureInBuildSettings();
+            };
         }
 
         private static void EnsureInBuildSettings()
