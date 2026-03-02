@@ -8,7 +8,7 @@ UNITY_VERSION="${UNITY_VERSION:?}"
 BUILD_ARGS="${BUILD_ARGS:-}"
 
 RUN_UNITY() {
-  unity-cli run --unity-project "$UNITY_PROJECT_PATH" -quit -batchmode -nographics -buildTarget "$BUILD_TARGET" "$@"
+  unity-cli run --unity-project "${UNITY_PROJECT_PATH}" --unity-version "${UNITY_VERSION}" -quit -batchmode -nographics -buildTarget "$BUILD_TARGET" "$@"
 }
 
 case "$PROJECT" in
@@ -17,26 +17,32 @@ case "$PROJECT" in
     ;;
   compiler-errors)
     ec=0; RUN_UNITY || ec=$?
-    [[ $ec -eq 0 ]] && { echo "Expected compiler-errors to fail"; exit 1; }
+    [[ $ec -eq 0 ]] && {
+      echo "Expected compiler-errors to fail";
+      exit 1;
+    }
     ;;
   build-warnings|build-errors)
-    (cd "$UNITY_PROJECT_PATH" && openupm add com.utilities.buildpipeline)
+    (cd "${UNITY_PROJECT_PATH}" && openupm add com.utilities.buildpipeline)
     RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.ValidateProject -importTMProEssentialsAsset
     ec=0; RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.StartCommandLineBuild -sceneList Assets/Scenes/Main.unity $BUILD_ARGS || ec=$?
     if [[ "$PROJECT" == "build-errors" ]]; then
-      [[ $ec -eq 0 ]] && { echo "Expected build-errors to fail"; exit 1; }
+      [[ $ec -eq 0 ]] && {
+        echo "Expected build-errors to fail";
+        exit 1;
+      }
     fi
     ;;
   tests-suite)
     for platform in EditMode PlayMode Player; do
-      RUN_UNITY -runTests -testPlatform "$platform" -testResults "$UNITY_PROJECT_PATH/${platform}-Passing-results.xml" -testCategory Passing
-      RUN_UNITY -runTests -testPlatform "$platform" -testResults "$UNITY_PROJECT_PATH/${platform}-Failing-results.xml" -testCategory Failing || true
-      RUN_UNITY -runTests -testPlatform "$platform" -testResults "$UNITY_PROJECT_PATH/${platform}-Skipped-results.xml" -testCategory Skipped
-      RUN_UNITY -runTests -testPlatform "$platform" -testResults "$UNITY_PROJECT_PATH/${platform}-All-results.xml" || true
+      RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-Passing-results.xml" -testCategory Passing
+      RUN_UNITY -runTests -testPlatform "${platform}" -testResults "$UNITY_PROJECT_PATH/${platform}-Failing-results.xml" -testCategory Failing || true
+      RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-Skipped-results.xml" -testCategory Skipped
+      RUN_UNITY -runTests -testPlatform "${platform}" -testResults "${UNITY_PROJECT_PATH}/${platform}-All-results.xml" || true
     done
     ;;
   *)
-    echo "Unknown project: $PROJECT"
+    echo "Unknown project: ${PROJECT}"
     exit 1
     ;;
 esac
