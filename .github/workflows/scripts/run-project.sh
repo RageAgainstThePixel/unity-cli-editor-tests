@@ -7,7 +7,7 @@ BUILD_TARGET="${BUILD_TARGET:?}"
 BUILD_ARGS="${BUILD_ARGS:-}"
 
 RUN_UNITY() {
-  unity-cli run --unity-editor "${UNITY_EDITOR_PATH}" --unity-project "${UNITY_PROJECT_PATH}" -quit -batchmode -nographics -buildTarget "${BUILD_TARGET}" --log-name "${PROJECT}" "$@"
+  unity-cli run --unity-project "${UNITY_PROJECT_PATH}" --unity-editor "${UNITY_EDITOR_PATH}" -quit -batchmode -nographics -buildTarget "${BUILD_TARGET}" --log-name "${PROJECT}" "$@"
 }
 
 case "$PROJECT" in
