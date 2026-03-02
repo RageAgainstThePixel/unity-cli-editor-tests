@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -xeuo pipefail
 
 UNITY_PROJECT_PATH="${UNITY_PROJECT_PATH:?}"
 PROJECT="${PROJECT:?}"
@@ -8,7 +8,7 @@ UNITY_VERSION="${UNITY_VERSION:?}"
 BUILD_ARGS="${BUILD_ARGS:-}"
 
 RUN_UNITY() {
-  unity-cli run --unity-project "${UNITY_PROJECT_PATH}" --unity-version "${UNITY_VERSION}" -quit -batchmode -nographics -buildTarget "$BUILD_TARGET" "$@"
+  unity-cli run --unity-project "${UNITY_PROJECT_PATH}" --unity-version "${UNITY_VERSION}" -quit -batchmode -nographics -buildTarget "${BUILD_TARGET}" "$@"
 }
 
 case "$PROJECT" in
@@ -25,7 +25,7 @@ case "$PROJECT" in
   build-warnings|build-errors)
     (cd "${UNITY_PROJECT_PATH}" && openupm add com.utilities.buildpipeline)
     RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.ValidateProject -importTMProEssentialsAsset
-    ec=0; RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.StartCommandLineBuild -sceneList Assets/Scenes/Main.unity $BUILD_ARGS || ec=$?
+    ec=0; RUN_UNITY -executeMethod Utilities.Editor.BuildPipeline.UnityPlayerBuildTools.StartCommandLineBuild -sceneList Assets/Scenes/Main.unity ${BUILD_ARGS:+"${BUILD_ARGS}"} || ec=$?
     if [[ "$PROJECT" == "build-errors" ]]; then
       [[ $ec -eq 0 ]] && {
         echo "Expected build-errors to fail";
